@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,4 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
 Route::resource('products', ProductController::class)->except(['create', 'edit']);
-Route::resource('images', ProductController::class)->except(['create', 'edit']);
+Route::resource('images', ImageController::class)->except(['create', 'edit', 'update']);
+Route::post('images/{image}', [ImageController::class, 'update']);
