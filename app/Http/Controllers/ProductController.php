@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductCollection;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -12,23 +15,26 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $products = Product::orderByDesc('id')->paginate(5);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return new ProductCollection($products);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        $data = $request->validated();
+        $dataCategories = $data['categories'];
+
+        unset($data['categories']);
+
+        $product = Product::create($data);
+
+        $product->categories()->attach($dataCategories);
+
+        return new ProductResource($product);
     }
 
     /**
@@ -36,23 +42,27 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
+        return new ProductResource($product);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $data = $request->validated();
+
+        if (array_key_exists('categories', $data)) {
+            $dataCategories = $data['categories'];
+
+            $product->categories()->sync($dataCategories);
+
+            unset($data['categories']);
+        }
+
+        $product->update($data);
+
+        return new ProductResource($product);
     }
 
     /**
@@ -60,6 +70,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return response()->json([
+            'message' => 'Product deleted!'
+        ]);
     }
 }
