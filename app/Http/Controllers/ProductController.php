@@ -7,9 +7,17 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
+    private $service;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->service = $productService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -25,14 +33,7 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        $data = $request->validated();
-        $dataCategories = $data['categories'];
-
-        unset($data['categories']);
-
-        $product = Product::create($data);
-
-        $product->categories()->attach($dataCategories);
+        $product = $this->service->store($request);
 
         return new ProductResource($product);
     }
@@ -50,17 +51,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $data = $request->validated();
-
-        if (array_key_exists('categories', $data)) {
-            $dataCategories = $data['categories'];
-
-            $product->categories()->sync($dataCategories);
-
-            unset($data['categories']);
-        }
-
-        $product->update($data);
+        $this->service->update($request, $product);
 
         return new ProductResource($product);
     }

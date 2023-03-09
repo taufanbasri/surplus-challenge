@@ -53,7 +53,7 @@ class ImageController extends Controller
      */
     public function update(UpdateImageRequest $request, Image $image)
     {
-        $image = $this->service->update($request, $image);
+        $this->service->update($request, $image);
 
         return new ImageResource($image);
     }

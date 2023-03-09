@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($products as $product) {
             $product->categories()->attach($categories->random(2)->pluck('id')->toArray());
+            $product->images()->attach($images->random(2)->pluck('id')->toArray());
         }
     }
 }
