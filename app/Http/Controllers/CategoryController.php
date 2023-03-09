@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductCollection;
 use App\Models\Category;
 
 class CategoryController extends Controller
@@ -61,5 +62,12 @@ class CategoryController extends Controller
         return response()->json([
             'message' => 'Category deleted!'
         ]);
+    }
+
+    public function products(Category $category)
+    {
+        $products = $category->products;
+
+        return new ProductCollection($products);
     }
 }

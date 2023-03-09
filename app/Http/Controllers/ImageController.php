@@ -6,10 +6,9 @@ use App\Http\Requests\ImageRequest;
 use App\Http\Requests\UpdateImageRequest;
 use App\Http\Resources\ImageCollection;
 use App\Http\Resources\ImageResource;
+use App\Http\Resources\ProductCollection;
 use App\Models\Image;
 use App\Services\ImageService;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -68,5 +67,12 @@ class ImageController extends Controller
         return response()->json([
             'message' => 'Image deleted!'
         ]);
+    }
+
+    public function products(Image $image)
+    {
+        $products = $image->products;
+
+        return new ProductCollection($products);
     }
 }

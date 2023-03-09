@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
+Route::get('categories/{category}/products', [CategoryController::class, 'products']);
 Route::resource('products', ProductController::class)->except(['create', 'edit']);
 Route::resource('images', ImageController::class)->except(['create', 'edit', 'update']);
+Route::get('images/{image}/products', [ImageController::class, 'products']);
 Route::post('images/{image}', [ImageController::class, 'update']);
